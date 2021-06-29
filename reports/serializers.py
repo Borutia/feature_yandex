@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Email, Report
+from .utils import get_email_instance
 
 
 class EmailGetSerializer(serializers.ModelSerializer):
@@ -48,3 +49,42 @@ class EmailUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
         fields = ('email',)
+
+
+class ReportPostSerializer(serializers.ModelSerializer):
+    """Serializer for create report"""
+    order_id = serializers.IntegerField(min_value=1, required=False)
+    user_id = serializers.IntegerField(min_value=1)
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        email = get_email_instance(user_id)
+        validated_data['email'] = email
+        order_id = None
+        if 'order_id' in validated_data:
+            order_id = validated_data.pop('order_id')
+        report = Report.objects.create(**validated_data)
+        if order_id:
+            report.order_set.create(order_id=order_id)
+        report.save()
+        return report
+
+    def validate(self, validated_data):
+        if 'order_id' in validated_data:
+            if 'date_from' in validated_data or 'date_to' in validated_data:
+                raise serializers.ValidationError('order_id with date')
+        else:
+            if 'date_from' not in validated_data:
+                raise serializers.ValidationError('date_from is empty')
+            if 'date_to' not in validated_data:
+                raise serializers.ValidationError('date_to is empty')
+        return validated_data
+
+    def validate_user_id(self, user_id):
+        if user_id is None:
+            raise serializers.ValidationError('user_id is empty')
+        return user_id
+
+    class Meta:
+        model = Report
+        fields = ('date_from', 'date_to', 'order_id', 'user_id',)

@@ -1,18 +1,10 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from django.utils.http import urlsafe_base64_decode
 
-from .models import Email, Report
 from . import serializers
-
-
-def get_email_instance(user_id):
-    try:
-        return Email.objects.get(user_id=user_id)
-    except Email.DoesNotExist:
-        raise NotFound(detail='Instance not found')
+from .utils import get_email_instance
 
 
 class EmailView(APIView):
@@ -82,4 +74,13 @@ class ReportView(APIView):
 
     def post(self, request):
         """API POST /report"""
-        pass
+        serializer = serializers.ReportPostSerializer(data=request.data)
+        if serializer.is_valid():
+            report = serializer.save()
+            return Response(
+                {
+                    'report_id': report.id,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

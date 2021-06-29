@@ -1,8 +1,17 @@
 from django.conf import settings
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from rest_framework.exceptions import NotFound
 
+from .models import Email
 from .consts import EMAIL_URL_CONFIRM
+
+
+def get_email_instance(user_id):
+    try:
+        return Email.objects.get(user_id=user_id)
+    except Email.DoesNotExist:
+        raise NotFound(detail='Instance not found')
 
 
 def get_email_link(
