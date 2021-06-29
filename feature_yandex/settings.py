@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ehi6=_ixycscf)*+bgv(2f@e65@zn%9ag(6$05g)$c+#xziz0@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'reports.apps.ReportsConfig',
 ]
 
 MIDDLEWARE = [
@@ -78,6 +80,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'reports_app_db',
+        # 'USER': 'reports_app',
+        # 'PASSWORD': 'secret',
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '5432',
     }
 }
 
