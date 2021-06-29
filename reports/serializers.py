@@ -13,6 +13,7 @@ class EmailGetSerializer(serializers.ModelSerializer):
 
 class EmailPostSerializer(serializers.ModelSerializer):
     """Serializer for create email"""
+
     def create(self, validated_data):
         Email.objects.create(**validated_data)
         return validated_data
@@ -32,6 +33,7 @@ class EmailPostSerializer(serializers.ModelSerializer):
 
 class EmailUpdateSerializer(serializers.ModelSerializer):
     """Serializer for update email"""
+
     def update(self, instance, validated_data):
         instance.email = validated_data['email']
         instance.is_confirmed = False
