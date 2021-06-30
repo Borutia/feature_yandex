@@ -13,14 +13,14 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'send_email_link_task': {
         'task': 'reports.tasks.send_email_link_task',
-        'schedule': crontab(minute=1)
+        'schedule': crontab(minute='*/1')
     },
     'send_report_task': {
         'task': 'reports.tasks.send_report_task',
-        'schedule': crontab(minute=2)
+        'schedule': crontab(minute='*/2')
     },
     'send_report_period_task': {
         'task': 'reports.tasks.send_report_period_task',
-        'schedule': crontab(minute=10)
+        'schedule': crontab(minute='*/10')
     },
 }
