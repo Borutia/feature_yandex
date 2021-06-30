@@ -37,7 +37,7 @@ python manage.py migrate
 ```
 
 ### Запуск приложения
-Команда для запуска Rides
+Команда для запуска Redis
 ```
 redis-server
 ```
