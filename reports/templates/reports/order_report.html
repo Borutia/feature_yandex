@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title></title>
+    </head>
+    <body>
+        <div>
+            {% for order in orders_info %}
+                <p>
+                    <h1>Отчет о поездке № {{ order.order_id }}</h1>
+                </p>
+                <p>
+                    {{ order.date }}
+                </p>
+                <p>
+                    Вы заказали такси {{ order.date }}
+                    в {{ order.time }}
+                    <br>
+                    {{ order.address_from }}
+                    <br>
+                    {{ order.address_to }}
+                    <br>
+                    Стоимость поездки - {{ order.cost }} рублей.
+                    <br>
+                    Тариф - {{ order.rate }}
+                    <br>
+                    Время в пути - {{ order.travel_time }} мин
+                </p>
+                <p>
+                    Спасибо, Яндекс Go
+                </p>
+            {% endfor %}
+        </div>
+    </body>
+</html>

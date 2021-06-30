@@ -8,8 +8,8 @@ class Email(models.Model):
 
 
 class Report(models.Model):
-    date_from = models.DateTimeField('Дата с', null=True)
-    date_to = models.DateTimeField('Дата по', null=True)
+    date_from = models.DateField('Дата с', null=True)
+    date_to = models.DateField('Дата по', null=True)
     send_time = models.DateTimeField('Время отправки', null=True)
     email = models.ForeignKey(Email, on_delete=models.CASCADE)
 

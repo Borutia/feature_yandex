@@ -8,7 +8,6 @@ from .utils import get_email_instance
 
 
 class EmailView(APIView):
-
     def get(self, request, user_id):
         """API GET /email/$user_id"""
         instance = get_email_instance(user_id)
@@ -56,7 +55,6 @@ class EmailView(APIView):
 
 
 class EmailConfirmView(APIView):
-
     def get(self, request):
         """API GET email/confirm"""
         email = request.GET.get('email', '')
@@ -71,7 +69,6 @@ class EmailConfirmView(APIView):
 
 
 class ReportView(APIView):
-
     def post(self, request):
         """API POST /report"""
         serializer = serializers.ReportPostSerializer(data=request.data)

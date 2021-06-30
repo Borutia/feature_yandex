@@ -57,9 +57,6 @@ class ReportPostSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(min_value=1)
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        email = get_email_instance(user_id)
-        validated_data['email'] = email
         order_id = None
         if 'order_id' in validated_data:
             order_id = validated_data.pop('order_id')
@@ -70,6 +67,11 @@ class ReportPostSerializer(serializers.ModelSerializer):
         return report
 
     def validate(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        email = get_email_instance(user_id)
+        if not email.is_confirmed:
+            raise serializers.ValidationError('email is not confirmed')
+        validated_data['email'] = email
         if 'order_id' in validated_data:
             if 'date_from' in validated_data or 'date_to' in validated_data:
                 raise serializers.ValidationError('order_id with date')
