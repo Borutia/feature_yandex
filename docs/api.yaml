@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: 'email-report app'
+  version: '1.0'
+
+paths:
+  /email:
+    post:
+      description: 'create email'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPostRequest'
+      responses:
+        '201':
+            description: 'Created'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/EmailResponse'
+        '400':
+            description: 'Bad request'
+
+  /email/{user_id}:
+    parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          type: integer
+    get:
+      description: 'get email'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailGetResponse'
+        '404':
+            description: 'Not found'
+
+    patch:
+      description: 'update email'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailPatchRequest'
+      responses:
+          '200':
+            description: 'Created'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/EmailResponse'
+          '400':
+            description: 'Bad request'
+          '404':
+            description: 'Not found'
+
+    delete:
+      description: 'delete email'
+      responses:
+        '204':
+          description: 'No content'
+        '404':
+          description: 'Not found'
+
+  /email/confirm:
+    parameters:
+      - in: query
+        name: email
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: confirmation_code
+        required: true
+        schema:
+          type: string
+    get:
+      description: 'confirm email'
+      responses:
+        '200':
+          description: 'OK'
+        '404':
+          description: 'Not found'
+
+  /report:
+    post:
+      description: 'create report with order'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportOrderPostRequest'
+      responses:
+          '201':
+            description: 'Created'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ReportResponse'
+          '400':
+            description: 'Bad request'
+
+  /report/peroid:
+    post:
+      description: 'create report with period'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportPeriodPostRequest'
+      responses:
+        '201':
+            description: 'Created'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ReportResponse'
+        '400':
+          description: 'Bad request'
+
+components:
+  schemas:
+    EmailGetResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: test@yandex.ru
+        is_confirmed:
+          type: boolean
+          example: true
+      required:
+      - user_id
+
+    EmailResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          type: integer
+          example: 1
+      required:
+      - user_id
+
+    EmailPostRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: 'test@yandex.ru'
+      required:
+      - user_id
+      - email
+
+    EmailPatchRequest:
+        type: object
+        additionalProperties: false
+        properties:
+          email:
+            type: string
+            example: 'test@yandex.ru'
+        required:
+        - email
+
+    ReportResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        report_id:
+          type: integer
+          example: 1
+      required:
+      - report_id
+
+    ReportOrderPostRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        order_id:
+          type: integer
+          example: 1
+      required:
+      - user_id
+      - order_id
+
+    ReportPeriodPostRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        date_from:
+          type: string
+          example: '2021-05-10'
+        date_to:
+          type: string
+          example: '2021-06-10'
+      required:
+      - user_id
+      - date_from
+      - date_to

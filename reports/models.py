@@ -5,6 +5,7 @@ class Email(models.Model):
     user_id = models.PositiveIntegerField('id пользователя', unique=True)
     email = models.EmailField('email', null=True, unique=True)
     is_confirmed = models.BooleanField('Подтвержден', default=False)
+    is_send = models.BooleanField('Отправлено', default=False)
 
 
 class Report(models.Model):

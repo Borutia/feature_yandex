@@ -140,3 +140,10 @@ EMAIL_HOST_PASSWORD = 'uhhw5v6g'
 
 CURRENT_PROTOCOL = 'http'
 CURRENT_HOST = '127.0.0.1:8000'
+
+# Celery
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

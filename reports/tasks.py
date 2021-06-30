@@ -3,14 +3,18 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template
 
-from .models import Email, Order, Report, OrderPeriod
+from .models import Email, Order, OrderPeriod
 from .utils import get_email_link, get_order_info, get_order_period_info
 from .consts import EMAIL_SUBJECT, ORDER_SUBJECT, ORDER_SUBJECT_PERIOD
+from feature_yandex.celery import app
 
 
+@app.task
 def send_email_link_task():
     """Отправка сообщения на почту для подтверждения email"""
-    users = Email.objects.filter(is_confirmed=False).exclude(email=None)
+    users = Email.objects.filter(
+        is_confirmed=False, is_send=False
+    ).exclude(email=None)
     for user in users:
         message = get_template("reports/email_confirm.html").render(
             {
@@ -24,8 +28,11 @@ def send_email_link_task():
             [user.email],
             html_message=message
         )
+        user.is_send = True
+        user.save()
 
 
+@app.task
 def send_report_task():
     """Отправка отчетов по каждому заказу"""
     orders = Order.objects.filter(
@@ -49,6 +56,7 @@ def send_report_task():
         order.report.save()
 
 
+@app.task
 def send_report_period_task():
     """Отправка отчетов за период"""
     orders = OrderPeriod.objects.filter(
