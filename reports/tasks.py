@@ -3,12 +3,12 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template
 
-from .models import Email, Order, Report
+from .models import Email, Order, Report, OrderPeriod
 from .utils import get_email_link, get_order_info, get_order_period_info
 from .consts import EMAIL_SUBJECT, ORDER_SUBJECT, ORDER_SUBJECT_PERIOD
 
 
-def send_email_task():
+def send_email_link_task():
     """Отправка сообщения на почту для подтверждения email"""
     users = Email.objects.filter(is_confirmed=False).exclude(email=None)
     for user in users:
@@ -29,7 +29,7 @@ def send_email_task():
 def send_report_task():
     """Отправка отчетов по каждому заказу"""
     orders = Order.objects.filter(
-        report__date_from=None, report__date_to=None, report__send_time=None
+        report__send_time=None, report__orderperiod=None
     )
     for order in orders:
         order_info = get_order_info(order.id)
@@ -51,22 +51,27 @@ def send_report_task():
 
 def send_report_period_task():
     """Отправка отчетов за период"""
-    reports = Report.objects.filter(send_time=None).exclude(
-        date_from=None, date_to=None,
+    orders = OrderPeriod.objects.filter(
+        report__send_time=None, report__order=None
     )
-    for report in reports:
-        orders_info = get_order_period_info(report.date_from, report.date_to)
+    for order in orders:
+        orders_info = get_order_period_info(
+            order.date_from, order.date_to
+        )
         message = get_template("reports/order_report.html").render(
             {
                 'orders_info': orders_info['data'],
             }
         )
         send_mail(
-            ORDER_SUBJECT_PERIOD.format(report.date_from, report.date_to),
+            ORDER_SUBJECT_PERIOD.format(
+                order.date_from,
+                order.date_to,
+            ),
             message,
             settings.EMAIL_HOST_USER,
-            [report.email.email],
+            [order.report.email.email],
             html_message=message,
         )
-        report.send_time = timezone.now()
-        report.save()
+        order.report.send_time = timezone.now()
+        order.report.save()

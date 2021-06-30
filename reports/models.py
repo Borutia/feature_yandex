@@ -8,12 +8,16 @@ class Email(models.Model):
 
 
 class Report(models.Model):
-    date_from = models.DateField('Дата с', null=True)
-    date_to = models.DateField('Дата по', null=True)
     send_time = models.DateTimeField('Время отправки', null=True)
     email = models.ForeignKey(Email, on_delete=models.CASCADE)
 
 
+class OrderPeriod(models.Model):
+    date_from = models.DateField('Дата с')
+    date_to = models.DateField('Дата по')
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
+
+
 class Order(models.Model):
-    order_id = models.PositiveIntegerField('id заказа')
+    order_id = models.PositiveIntegerField('id заказа', unique=True)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
