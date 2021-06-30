@@ -18,10 +18,10 @@ class EmailView(APIView):
         """API POST /email"""
         serializer = serializers.EmailPostSerializer(data=request.data)
         if serializer.is_valid():
-            data = serializer.save()
+            email = serializer.save()
             return Response(
                 {
-                    'user_id': data['user_id'],
+                    'user_id': email.user_id,
                 },
                 status=status.HTTP_201_CREATED,
             )
@@ -72,6 +72,21 @@ class ReportView(APIView):
     def post(self, request):
         """API POST /report"""
         serializer = serializers.ReportPostSerializer(data=request.data)
+        if serializer.is_valid():
+            report = serializer.save()
+            return Response(
+                {
+                    'report_id': report.id,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReportPeriodView(APIView):
+    def post(self, request):
+        """API POST /report/period"""
+        serializer = serializers.ReportPeriodPostSerializer(data=request.data)
         if serializer.is_valid():
             report = serializer.save()
             return Response(
