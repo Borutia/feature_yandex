@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.db.models import Q
+from rest_framework import serializers
 
 from .models import Email, Report, Order
 from .utils import get_email_instance
