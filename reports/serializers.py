@@ -43,6 +43,7 @@ class EmailUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.email = validated_data['email']
         instance.is_confirmed = False
+        instance.is_send = False
         instance.save()
         return instance
 
