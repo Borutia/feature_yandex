@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from reports.utils import get_email_link
-from .data_email_test import *
+from . import data_email_test
 
 
 class EmailGetTestCase(TestCase):
@@ -10,28 +10,28 @@ class EmailGetTestCase(TestCase):
         """Инициализация данных"""
         self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
 
     def test_email_good(self):
         """Запрос с существующим user_id, проверка статуса 200"""
         response = self.client.get(
-            '/email/{}'.format(GOOD_USER_ID),
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.data['user_id'], GOOD_EMAIL['user_id']
+            response.data['user_id'], data_email_test.GOOD_EMAIL['user_id']
         )
         self.assertEqual(
-            response.data['email'], GOOD_EMAIL['email']
+            response.data['email'], data_email_test.GOOD_EMAIL['email']
         )
 
     def test_wrong_user_id(self):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.get(
-            '/email/{}'.format(BAD_USER_ID),
+            '/email/{}'.format(data_email_test.BAD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 404)
@@ -43,7 +43,7 @@ class EmailPostTestCase(TestCase):
         """Загрузка данных, проверка статуса 201"""
         response = self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 201)
@@ -52,7 +52,7 @@ class EmailPostTestCase(TestCase):
         """Загрузка невалидного email, проверка статуса 400"""
         response = self.client.post(
             '/email',
-            data=BAD_EMAIL,
+            data=data_email_test.BAD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
@@ -72,13 +72,13 @@ class EmailPostTestCase(TestCase):
         """
         response_1 = self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response_1.status_code, 201)
         response_2 = self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response_1.status_code, 201)
@@ -88,7 +88,7 @@ class EmailPostTestCase(TestCase):
         """Запрос с отрицательным user_id, проверка статуса 400"""
         response = self.client.post(
             '/email',
-            data=BAD_EMAIL_USER_ID,
+            data=data_email_test.BAD_EMAIL_USER_ID,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
@@ -100,14 +100,14 @@ class EmailPatchTestCase(TestCase):
         """Инициализация данных"""
         self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
 
     def test_missing_data(self):
         """Обращение к обработчику с пустым телом, проверка статуса 400"""
         response = self.client.patch(
-            '/email/{}'.format(GOOD_USER_ID),
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, 400)
@@ -115,7 +115,7 @@ class EmailPatchTestCase(TestCase):
     def test_wrong_user_id(self):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.patch(
-            '/email/{}'.format(BAD_USER_ID),
+            '/email/{}'.format(data_email_test.BAD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 404)
@@ -126,14 +126,14 @@ class EmailPatchTestCase(TestCase):
         проверка статуса 200
         """
         response_1 = self.client.patch(
-            '/email/{}'.format(GOOD_USER_ID),
-            data=GOOD_EMAIL,
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response_1.status_code, 200)
         response_2 = self.client.patch(
-            '/email/{}'.format(GOOD_USER_ID),
-            data=GOOD_EMAIL,
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response_1.status_code, 200)
@@ -142,8 +142,8 @@ class EmailPatchTestCase(TestCase):
     def test_email_bad(self):
         """Загрузка невалидного email, проверка статуса 400"""
         response = self.client.patch(
-            '/email/{}'.format(GOOD_USER_ID),
-            data=BAD_EMAIL,
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
+            data=data_email_test.BAD_EMAIL,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
@@ -155,14 +155,14 @@ class EmailDeleteTestCase(TestCase):
         """Инициализация данных"""
         self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
 
     def test_delete(self):
         """Проверка на удаление, статус 204"""
         response = self.client.delete(
-            '/email/{}'.format(GOOD_USER_ID),
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 204)
@@ -170,7 +170,7 @@ class EmailDeleteTestCase(TestCase):
     def test_wrong_user_id(self):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.delete(
-            '/email/{}'.format(BAD_USER_ID),
+            '/email/{}'.format(data_email_test.BAD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 404)
@@ -181,12 +181,12 @@ class EmailDeleteTestCase(TestCase):
         проверка статуса 204
         """
         response_1 = self.client.delete(
-            '/email/{}'.format(GOOD_USER_ID),
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response_1.status_code, 204)
         response_2 = self.client.delete(
-            '/email/{}'.format(GOOD_USER_ID),
+            '/email/{}'.format(data_email_test.GOOD_USER_ID),
             content_type='application/json',
         )
         self.assertEqual(response_2.status_code, 204)
@@ -198,7 +198,7 @@ class EmailConfirmTestCase(TestCase):
         """Инициализация данных"""
         self.client.post(
             '/email',
-            data=GOOD_EMAIL,
+            data=data_email_test.GOOD_EMAIL,
             content_type='application/json',
         )
 
@@ -206,8 +206,8 @@ class EmailConfirmTestCase(TestCase):
         """Проверка подтверждения email, статус 200"""
         response = self.client.get(
             get_email_link(
-                email=GOOD_EMAIL['email'],
-                user_id=GOOD_EMAIL['user_id'],
+                email=data_email_test.GOOD_EMAIL['email'],
+                user_id=data_email_test.GOOD_EMAIL['user_id'],
             )
         )
         self.assertEqual(response.status_code, 200)
@@ -216,8 +216,8 @@ class EmailConfirmTestCase(TestCase):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.get(
             get_email_link(
-                email=GOOD_EMAIL['email'],
-                user_id=BAD_USER_ID,
+                email=data_email_test.GOOD_EMAIL['email'],
+                user_id=data_email_test.BAD_USER_ID,
             )
         )
         self.assertEqual(response.status_code, 404)
@@ -227,7 +227,7 @@ class EmailConfirmTestCase(TestCase):
         response = self.client.get(
             get_email_link(
                 email='bad_test@yandex.ru',
-                user_id=GOOD_EMAIL['user_id'],
+                user_id=data_email_test.GOOD_EMAIL['user_id'],
             )
         )
         self.assertEqual(response.status_code, 404)
@@ -239,15 +239,15 @@ class EmailConfirmTestCase(TestCase):
         """
         response_1 = self.client.get(
             get_email_link(
-                email=GOOD_EMAIL['email'],
-                user_id=GOOD_EMAIL['user_id'],
+                email=data_email_test.GOOD_EMAIL['email'],
+                user_id=data_email_test.GOOD_EMAIL['user_id'],
             )
         )
         self.assertEqual(response_1.status_code, 200)
         response_2 = self.client.get(
             get_email_link(
-                email=GOOD_EMAIL['email'],
-                user_id=GOOD_EMAIL['user_id'],
+                email=data_email_test.GOOD_EMAIL['email'],
+                user_id=data_email_test.GOOD_EMAIL['user_id'],
             )
         )
         self.assertEqual(response_2.status_code, 200)

@@ -2,7 +2,7 @@
 Фича - Отправка отчета о поездке на почту.
 
 ### Зависимости
-Должно быть установлено: Redis, Python
+Должно быть установлено: Python, Redis, Postgres
 
 Зависимости для проекта описаны в файле requirements.txt
 
@@ -56,4 +56,14 @@ celery -A feature_yandex beat
 Команда для запуска фоновых задач
 ```
 python manage.py run_tasks
+```
+
+### Тестирование
+Команда для запуска unit тестов
+```
+python manage.py test
+```
+Команда для запуска статических тестов
+```
+flake8 . --exclude=venv
 ```

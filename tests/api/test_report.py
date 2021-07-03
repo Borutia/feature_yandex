@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .data_report_test import *
+from . import data_report_test
 from .data_email_test import GOOD_EMAIL
 from reports.utils import get_email_link
 
@@ -27,7 +27,7 @@ class ReportPostTestCase(TestCase):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.post(
             '/report',
-            data=BAD_REPORT,
+            data=data_report_test.BAD_REPORT,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 404)
@@ -36,7 +36,7 @@ class ReportPostTestCase(TestCase):
         """Запрос с неподтвержденным email, проверка статуса 400"""
         response = self.client.post(
             '/report',
-            data=GOOD_REPORT,
+            data=data_report_test.GOOD_REPORT,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
@@ -51,7 +51,7 @@ class ReportPostTestCase(TestCase):
         )
         response = self.client.post(
             '/report',
-            data=GOOD_REPORT,
+            data=data_report_test.GOOD_REPORT,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 201)
@@ -79,7 +79,7 @@ class ReportPeriodTestCase(TestCase):
         """Запрос с несуществующим user_id, проверка статуса 404"""
         response = self.client.post(
             '/report/period',
-            data=BAD_REPORT_PERIOD,
+            data=data_report_test.BAD_REPORT_PERIOD,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 404)
@@ -88,7 +88,7 @@ class ReportPeriodTestCase(TestCase):
         """Запрос с неподтвержденным email, проверка статуса 400"""
         response = self.client.post(
             '/report/period',
-            data=GOOD_REPORT_PERIOD,
+            data=data_report_test.GOOD_REPORT_PERIOD,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
@@ -103,7 +103,7 @@ class ReportPeriodTestCase(TestCase):
         )
         response = self.client.post(
             '/report/period',
-            data=GOOD_REPORT_PERIOD,
+            data=data_report_test.GOOD_REPORT_PERIOD,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 201)
@@ -118,7 +118,7 @@ class ReportPeriodTestCase(TestCase):
         )
         response = self.client.post(
             '/report/period',
-            data=BAD_REPORT_PERIOD_DATE,
+            data=data_report_test.BAD_REPORT_PERIOD_DATE,
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 400)
