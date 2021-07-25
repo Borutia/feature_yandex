@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'reports.apps.ReportsConfig',
+    'django_prometheus',
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -50,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'feature_yandex.urls'
@@ -82,7 +85,7 @@ DATABASES = {
         'NAME': 'reports_app_db',
         'USER': 'reports_app',
         'PASSWORD': 'secret',
-        'HOST': '127.0.0.1',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -143,10 +146,10 @@ EMAIL_HOST_USER = 'pralmemavalgera@inbox.ru'
 EMAIL_HOST_PASSWORD = 'uhhw5v6g'
 
 CURRENT_PROTOCOL = 'http'
-CURRENT_HOST = '127.0.0.1:8000'
+CURRENT_HOST = '0.0.0.0:8080'
 
 # Celery
-REDIS_HOST = 'localhost'
+REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}

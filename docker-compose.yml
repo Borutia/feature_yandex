@@ -1,0 +1,99 @@
+services:
+  db:
+    container_name: database
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=reports_app_db
+      - POSTGRES_USER=reports_app
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5432:5432"
+  app:
+    container_name: app
+    build: .
+    command: >
+      sh -c 'python manage.py migrate &&
+             python manage.py test &&
+             python manage.py runserver 0.0.0.0:8080'
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+      - celery_worker
+  prometheus-server:
+    container_name: prometheus-server
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    image: prom/prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+  grafana:
+    container_name: grafana
+    image: uranix/grafana-with-dashboards
+    restart: always
+    ports:
+      - "3000:3000"
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    command: redis-server
+    ports:
+      - '6379:6379'
+  celery_worker:
+    container_name: celery_worker
+    build: .
+    command: celery -A feature_yandex worker -l INFO
+    volumes:
+      - .:/app
+    restart: always
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+  celery_beat:
+    container_name: celery_beat
+    build: .
+    command: celery -A feature_yandex beat
+    volumes:
+      - .:/app
+    restart: always
+    links:
+      - redis
+    depends_on:
+      - db
+      - redis
+      - app
+  tasks:
+    container_name: tasks
+    build: .
+    command: python manage.py run_tasks
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+      - app
+      - celery_beat
+  flower:
+    container_name: flower
+    image: mher/flower
+    restart: always
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379
+      - FLOWER_PORT=5555
+    depends_on:
+      - redis
+      - celery_worker
+      - celery_beat
+    ports:
+      - 5555:5555
