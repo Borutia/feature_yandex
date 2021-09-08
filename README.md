@@ -23,7 +23,7 @@ flake8 . --exclude=venv
 ```
 
 ### Метрики
-Grafana http://0.0.0.0:3000/
+Grafana http://0.0.0.0:3000
 
 ### Мониторинг тасков Celery
 Flower http://0.0.0.0:5555
